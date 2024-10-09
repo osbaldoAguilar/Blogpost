@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Post;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -22,6 +23,26 @@ class User extends Authenticatable
         'email',
         'password',
     ];
+    /**
+     * The attributes for the avatar column
+     */
+    // protected function avatar(): Attribute
+    // {
+    //     return Attribute::make(get: function ($value) {
+    //         return $value ? '/storage/avatars' : 'fallback-avatar.jpg';
+    //     });
+    // }
+
+    protected function avatar(): Attribute
+    {
+        return Attribute::make(
+            get: function ($value) {
+                // Return the avatar path if it exists, otherwise return the fallback image
+                return $value ? "/storage/avatars/{$value}" : '/fallback-avatar.jpg';
+            }
+        );
+    }
+
 
     /**
      * The attributes that should be hidden for serialization.

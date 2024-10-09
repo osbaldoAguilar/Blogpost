@@ -36,4 +36,6 @@ Route::delete('/post/{post}', [PostController::class, 'delete'])->middleware("ca
 
 // Profile Routes
 Route::get('/profile/{user:username}', [UserController::class, 'showProfileView']);
+Route::get('/manage-avatar', [UserController::class, 'showAvatarForm'])->middleware(MustBeLoggedIn::class);
+Route::post('/manage-avatar', [UserController::class, 'storeNewAvatar'])->middleware(MustBeLoggedIn::class);
 // ->middleware(MustBeLoggedIn::class);
