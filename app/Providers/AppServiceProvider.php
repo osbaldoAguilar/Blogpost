@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Models\Post;
 use App\Policies\PostPolicy;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 
@@ -28,5 +29,7 @@ class AppServiceProvider extends ServiceProvider
         Gate::define('visitAdminPages', function ($user) {
             return $user->isAdmin === 1;
         });
+
+        Paginator::useBootstrapFive();
     }
 }

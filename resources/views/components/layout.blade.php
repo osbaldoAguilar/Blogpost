@@ -5,7 +5,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>SocialApp</title>
+    <title>
+        @isset($doctitle)
+            {{ $doctitle }}
+            |
+            Blog App
+        @else
+            Blog App
+        @endisset
+    </title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
         integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous" />
     <script defer src="https://use.fontawesome.com/releases/v5.5.0/js/all.js"
@@ -15,7 +23,8 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,400;0,700;1,400;1,700&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="/main.css" />
+    @vite(['resources/css/app.css'])
+    @vite(['resources/js/app.js'])
 </head>
 
 <body>
@@ -25,7 +34,7 @@
 
             @auth
                 <div class="flex-row my-3 my-md-0">
-                    <a href="#" class="text-white mr-2 header-search-icon" title="Search" data-toggle="tooltip"
+                    <a href="/search" class="text-white mr-2 header-search-icon" title="Search" data-toggle="tooltip"
                         data-placement="bottom"><i class="fas fa-search"></i></a>
                     <span class="text-white mr-2 header-chat-icon" title="Chat" data-toggle="tooltip"
                         data-placement="bottom"><i class="fas fa-comment"></i></span>

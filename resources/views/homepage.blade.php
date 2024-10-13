@@ -1,4 +1,4 @@
-<x-layout>
+<x-layout doctitle="Welcome to Blog Post">
 
     <div class="container py-md-5">
         <div class="row align-items-center">
