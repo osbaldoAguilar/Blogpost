@@ -67,6 +67,29 @@ class User extends Authenticatable
         ];
     }
 
+
+    public function feedUserPosts()
+    {
+        return $this->hasManyThrough(
+            Post::class, // The final 
+            Follow::class, // the intermediate "table that has relationship that you have to look up"
+            'user_id', // foreign key intermediate
+            'user_id', //foreign key final 
+            'id', // local key final 
+            'follows_user' // local key intermediate
+        );
+    }
+
+    public function followers()
+    {
+        return $this->hasMany(Follow::class, 'follows_user');
+    }
+
+    public function following()
+    {
+        return $this->hasMany(Follow::class, 'user_id');
+    }
+
     public function posts()
     {
         return $this->hasMany(Post::class, 'user_id');
