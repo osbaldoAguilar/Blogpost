@@ -6,6 +6,7 @@ use App\Models\Post;
 use App\Policies\PostPolicy;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,5 +32,10 @@ class AppServiceProvider extends ServiceProvider
         });
 
         Paginator::useBootstrapFive();
+
+        Event::listen(
+            'App\Events\OurExampleEvent',
+            'App\Listeners\ExampleEventListener'
+        );
     }
 }
