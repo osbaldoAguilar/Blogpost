@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\ChatMessage;
+use Illuminate\Http\Request;
 use App\Http\Middleware\MustBeGuest;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\MustBeLoggedIn;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\FollowController;
+use Illuminate\Support\Facades\Auth;
 
 Route::get('/admins-only', function () {
     // if (Gate::allows('visitAdminPages')) {
@@ -48,3 +51,24 @@ Route::post('/create-follow/{user:username}', [FollowController::class, 'createF
 
 // Route::post('/create-follow/{user:username}', [FollowController::class, 'createFollow'])->middleware(MustBeLoggedIn::class);
 Route::post('/remove-follow/{user:username}', [FollowController::class, 'removeFollow'])->middleware(MustBeLoggedIn::class);
+
+// Chat Routes
+Route::post('/send-chat-message', function (Request $request) {
+    $formFields = $request->validate([
+        'textvalue' => 'required'
+    ]);
+
+    if (!trim(strip_tags($formFields['textvalue']))) {
+        return response()->noContent();
+    }
+
+    broadcast(new ChatMessage([
+        // 'username' => auth()->user()->username,
+        'username' => Auth::user()->username,
+        'textvalue' => strip_tags($request->textvalue),
+        'avatar' => Auth::user()->avatar
+        // 'avatar' => auth()->user()->avatar
+    ]))->toOthers();
+
+    return response()->noContent();
+})->middleware(MustBeLoggedIn::class);

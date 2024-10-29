@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\OurExampleEvent;
 use App\Models\User;
 use App\Models\Follow;
 use Illuminate\Http\Request;
@@ -40,6 +41,11 @@ class UserController extends Controller
         // Attempt to log in with the given username and password
         if (Auth::attempt(['username' => $incomingFields['loginusername'], 'password' => $incomingFields['loginpassword']])) {
             // Login successful, redirect or return success message
+            event(new OurExampleEvent([
+                'username' => auth()->user()->username,
+                'avatar' => auth()->user()->avatar,
+                'action' => 'login'
+            ]));
             $request->session()->regenerate();
             return redirect('/')->with('success', 'You are now successfully logged in');
         } else {
@@ -50,6 +56,11 @@ class UserController extends Controller
 
     public function logout()
     {
+        event(new OurExampleEvent([
+            'username' => auth()->user()->username,
+            'avatar' => auth()->user()->avatar,
+            'action' => 'logout'
+        ]));
         Auth::logout();
         return redirect('/')->with('success', 'You are now successfully logged out');;
     }
