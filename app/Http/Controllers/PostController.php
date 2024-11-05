@@ -3,9 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Mail\NewPostEmail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Jobs\SendNewPostEmail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
 
 class PostController extends Controller
 {
@@ -16,7 +19,6 @@ class PostController extends Controller
 
     public function showEditForm(Post $post)
     {
-        // $post['body'] = strip_tags((Str::markdown($post->body)), '<h1><h2><h3><p><ul><li><strong><em><br>');
         return view('edit-post', ['post' => $post]);
     }
 
@@ -31,6 +33,8 @@ class PostController extends Controller
         $incomingFields['user_id'] = Auth::id();
 
         $newPost = Post::create($incomingFields);
+
+        dispatch(new SendNewPostEmail(['sendTo' => auth()->user()->email, 'name' => auth()->user()->username, 'title' => $newPost->title]));
 
         return redirect("/post/{$newPost->id}")->with('success', 'New post successfully created');
     }
