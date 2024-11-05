@@ -19,7 +19,6 @@ class PostController extends Controller
 
     public function showEditForm(Post $post)
     {
-        // $post['body'] = strip_tags((Str::markdown($post->body)), '<h1><h2><h3><p><ul><li><strong><em><br>');
         return view('edit-post', ['post' => $post]);
     }
 

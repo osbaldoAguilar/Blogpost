@@ -23,9 +23,6 @@ class UserController extends Controller
             'email' => ['required', 'email', Rule::unique('users', 'email')],
             'password' => ['required', 'min:8', 'confirmed']
         ]);
-        // seems to be doing automatically
-        // $incomingFields['password'] = bcrypt($incomingFields['password']);
-        // looks in associated array for password
         $user = User::create($incomingFields);
         Auth::login($user);
         return redirect('/')->with('success', 'Thank you for creating an account!');
@@ -95,23 +92,12 @@ class UserController extends Controller
     }
     public function showProfileViewRaw(User $user)
     {
-        // $this->getSharedData($user);
         return response()->json(['theHtml' => view('profile-only', ['posts' => $user->posts()->latest()->get()])->render(), 'docTitle' => $user->username . "'s Profile"]);
-        // return response()->json(['theHtml' => 'profile-only', 'posts' => $user->posts()->latest()->get(), 'docTitle' => $user->username . "'s Profile"]);
     }
     public function showProfileFollowers(User $user)
     {
         $this->getSharedData($user);
-        // return $user->followers()->get();
         return view('profile-followers', ['followers' => $user->followers()->get()]);
-        // $currentFollowing = 0;
-
-        // if (auth()->check()) {
-        //     $currentFollowing = Follow::where([['user_id', '=', auth()->user()->id], ['follows_user', '=', $user->id]])->count();
-        // }
-
-
-        // return view('profile-followers', ['currentFollowing' => $currentFollowing, 'avatar' => $user->avatar, 'username' => $user->username, 'posts' => $user->posts()->get(), 'postCount' => $user->posts()->count()]);
     }
 
     public function showProfileFollowersRaw(User $user)
@@ -125,15 +111,6 @@ class UserController extends Controller
     {
         $this->getSharedData($user);
         return view('profile-following', ['following' => $user->following()->get()]);
-
-        // $currentFollowing = 0;
-
-        // if (auth()->check()) {
-        //     $currentFollowing = Follow::where([['user_id', '=', auth()->user()->id], ['follows_user', '=', $user->id]])->count();
-        // }
-
-
-        // return view('profile-following', ['currentFollowing' => $currentFollowing, 'avatar' => $user->avatar, 'username' => $user->username, 'posts' => $user->posts()->get(), 'postCount' => $user->posts()->count()]);
     }
 
     public function showProfileFollowingRaw(User $user)

@@ -12,4 +12,4 @@ Artisan::command('inspire', function () {
 
 Schedule::call(function () {
     Mail::to('test@google.com')->send(new RecapEmail());
-})->everyMinute();
+})->daily();
