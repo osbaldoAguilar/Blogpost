@@ -93,6 +93,12 @@ class UserController extends Controller
         $this->getSharedData($user);
         return view('profile-post', ['posts' => $user->posts()->latest()->get()]);
     }
+    public function showProfileViewRaw(User $user)
+    {
+        // $this->getSharedData($user);
+        return response()->json(['theHtml' => view('profile-only', ['posts' => $user->posts()->latest()->get()])->render(), 'docTitle' => $user->username . "'s Profile"]);
+        // return response()->json(['theHtml' => 'profile-only', 'posts' => $user->posts()->latest()->get(), 'docTitle' => $user->username . "'s Profile"]);
+    }
     public function showProfileFollowers(User $user)
     {
         $this->getSharedData($user);
@@ -107,6 +113,14 @@ class UserController extends Controller
 
         // return view('profile-followers', ['currentFollowing' => $currentFollowing, 'avatar' => $user->avatar, 'username' => $user->username, 'posts' => $user->posts()->get(), 'postCount' => $user->posts()->count()]);
     }
+
+    public function showProfileFollowersRaw(User $user)
+    {
+        $this->getSharedData($user);
+
+        return response()->json(['theHtml' => view('profile-followers-only', ['followers' => $user->followers()->get()])->render(), 'docTitle' => $user->username . "'s Followers"]);
+    }
+
     public function showProfileFollowing(User $user)
     {
         $this->getSharedData($user);
@@ -121,6 +135,16 @@ class UserController extends Controller
 
         // return view('profile-following', ['currentFollowing' => $currentFollowing, 'avatar' => $user->avatar, 'username' => $user->username, 'posts' => $user->posts()->get(), 'postCount' => $user->posts()->count()]);
     }
+
+    public function showProfileFollowingRaw(User $user)
+    {
+        $this->getSharedData($user);
+
+        return response()->json(['theHtml' => view('profile-following-only', ['following' => $user->following()->get()])->render(), 'docTitle' => "Who " . $user->username . " Follows"]);
+    }
+
+
+
     public function showAvatarForm()
     {
         return view('avatar-form');

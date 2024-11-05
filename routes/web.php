@@ -39,11 +39,22 @@ Route::get('/post/{post}', [PostController::class, 'showSinglePostView'])->middl
 Route::delete('/post/{post}', [PostController::class, 'delete'])->middleware("can:delete,post");
 
 // Profile Routes
+Route::get('/manage-avatar', [UserController::class, 'showAvatarForm'])->middleware(MustBeLoggedIn::class);
+Route::post('/manage-avatar', [UserController::class, 'storeNewAvatar'])->middleware(MustBeLoggedIn::class);
+
 Route::get('/profile/{user:username}', [UserController::class, 'showProfileView']);
 Route::get('/profile/{user:username}/followers', [UserController::class, 'showProfileFollowers']);
 Route::get('/profile/{user:username}/following', [UserController::class, 'showProfileFollowing']);
-Route::get('/manage-avatar', [UserController::class, 'showAvatarForm'])->middleware(MustBeLoggedIn::class);
-Route::post('/manage-avatar', [UserController::class, 'storeNewAvatar'])->middleware(MustBeLoggedIn::class);
+
+Route::middleware('cache.headers:public;max_age=20;etag')->group(
+    function () {
+
+        Route::get('/profile/{user:username}/raw', [UserController::class, 'showProfileViewRaw']);
+        Route::get('/profile/{user:username}/followers/raw', [UserController::class, 'showProfileFollowersRaw']);
+        Route::get('/profile/{user:username}/following/raw', [UserController::class, 'showProfileFollowingRaw']);
+    }
+);
+
 // ->middleware(MustBeLoggedIn::class);
 
 // Follow Routes
