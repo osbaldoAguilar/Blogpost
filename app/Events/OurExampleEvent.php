@@ -14,6 +14,11 @@ class OurExampleEvent
     /**
      * Create a new event instance.
      */
+
+    // Define the properties
+    public string $username;
+    public string $action;
+
     public function __construct($theEvent)
     {
         //
