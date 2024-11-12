@@ -38,6 +38,23 @@ class PostController extends Controller
 
         return redirect("/post/{$newPost->id}")->with('success', 'New post successfully created');
     }
+    public function storeNewPostApi(Request $request)
+    {
+        $incomingFields = $request->validate([
+            'title' => 'required',
+            'body' => 'required'
+        ]);
+        $incomingFields['title'] = strip_tags($incomingFields['title']);
+        $incomingFields['body'] = strip_tags($incomingFields['body']);
+        $incomingFields['user_id'] = Auth::id();
+
+        $newPost = Post::create($incomingFields);
+
+        dispatch(new SendNewPostEmail(['sendTo' => auth()->user()->email, 'name' => auth()->user()->username, 'title' => $newPost->title]));
+
+        return $newPost->id;
+        // redirect("/post/{$newPost->id}")->with('success', 'New post successfully created');
+    }
 
     public function showSinglePostView(Post $post)
     {
@@ -52,6 +69,26 @@ class PostController extends Controller
 
         return redirect('/profile/' . auth()->user()->username)->with('success', "{$post->title} post was deleted");
     }
+    // WIP - need to update the delete api function 
+    // public function deletePostApi(Request $request, Post $post)
+    // {
+    //     // Authenticate the user using the bearer token
+    //     $user = Auth::guard('sanctum')->user();
+
+    //     if (!$user) {
+    //         return response()->json(['error' => 'Unauthorized'], 401);
+    //     }
+
+    //     // Check if the authenticated user is the owner of the post
+    //     if ($post->user_id !== $user->id) {
+    //         return response()->json(['error' => 'Forbidden'], 403);
+    //     }
+
+    //     // Delete the post
+    //     $post->delete();
+
+    //     return response()->json(['success' => "{$post->title} post was deleted"], 200);
+    // }
 
     public function update(Post $post, Request $request)
     {

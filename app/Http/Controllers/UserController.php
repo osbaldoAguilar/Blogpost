@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Events\OurExampleEvent;
 use App\Models\User;
 use App\Models\Follow;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Intervention\Image\ImageManager;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
@@ -51,6 +53,22 @@ class UserController extends Controller
         }
     }
 
+    public function loginApi(Request $request)
+    {
+        $incomingFields = $request->validate([
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        if (auth()->attempt($incomingFields)) {
+            $user = User::where('username', $incomingFields['username'])->first();
+            $token = $user->createToken('API Token')->plainTextToken;
+            return response()->json(['token' => $token], 200);
+        }
+
+        return response()->json(['error' => 'Invalid credentials'], 401);
+    }
+
     public function logout()
     {
         event(new OurExampleEvent([
@@ -70,7 +88,12 @@ class UserController extends Controller
             // return view('homepage-feed', ['posts' => auth()->user()->feedUserPosts]);
             return view('homepage-feed', ['posts' => auth()->user()->feedUserPosts()->latest()->paginate(4)]);
         } else {
-            return view('homepage');
+
+            $postCount = Cache::remember('postCount', 20, function () {
+                return Post::count();
+            });
+
+            return view('homepage', ['postCount' => $postCount]);
         }
     }
 

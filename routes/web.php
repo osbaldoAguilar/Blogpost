@@ -25,6 +25,7 @@ Route::get('/', [UserController::class, 'showCorrectHomepage'])->name('login');
 
 Route::post('/register', [UserController::class, 'register'])->middleware(MustBeGuest::class);
 Route::post('/login', [UserController::class, 'login'])->middleware(MustBeGuest::class);
+// Route::middleware('api')->post('/api/login', [UserController::class, 'loginApi'])->name('api.login');
 Route::post('/logout', [UserController::class, 'logout'])->middleware(MustBeLoggedIn::class);
 
 
